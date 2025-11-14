@@ -1,0 +1,40 @@
+import random, os, msvcrt
+
+W, H = 21, 15
+maze = [["#" for _ in range(W)] for _ in range(H)]
+
+def carve(x, y):
+    dirs = [(2,0),(-2,0),(0,2),(0,-2)]
+    random.shuffle(dirs)
+    for dx, dy in dirs:
+        nx, ny = x+dx, y+dy
+        if 1 <= nx < W-1 and 1 <= ny < H-1 and maze[ny][nx] == "#":
+            maze[ny][nx] = " "
+            maze[y+dy//2][x+dx//2] = " "
+            carve(nx, ny)
+
+maze[1][1] = " "
+carve(1,1)
+
+px, py = 1, 1
+exit = (W-2, H-2)
+maze[exit[1]][exit[0]] = "E"
+
+while True:
+    os.system("cls")
+    for y in range(H):
+        for x in range(W):
+            print("P" if (x,y)==(px,py) else maze[y][x], end="")
+        print()
+
+    if (px,py) == exit:
+        print("\nYou escaped the maze! 🎉")
+        break
+
+    if msvcrt.kbhit():
+        k = msvcrt.getch().decode().lower()
+        dx = 1 if k=="d" else -1 if k=="a" else 0
+        dy = 1 if k=="s" else -1 if k=="w" else 0
+        nx, ny = px+dx, py+dy
+        if maze[ny][nx] != "#":
+            px, py = nx, ny
