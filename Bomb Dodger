@@ -1,0 +1,43 @@
+import os, time, random, msvcrt
+
+W, H = 30, 15
+player_x = W // 2
+bombs = []
+score = 0
+tick = 0
+
+while True:
+    os.system("cls")
+
+    grid = [[" " for _ in range(W)] for _ in range(H)]
+    grid[H-1][player_x] = "A"
+
+    if tick % 3 == 0:
+        bombs.append([random.randint(0, W-1), 0])
+    tick += 1
+
+    for b in bombs:
+        if b[1] < H-1:
+            b[1] += 1
+
+    bombs = [b for b in bombs if b[1] < H]
+
+    for x, y in bombs:
+        grid[y][x] = "*"
+
+    for row in grid:
+        print("".join(row))
+
+    print(f"\nScore: {score}")
+    score += 1
+
+    if any(b[1] == H-1 and b[0] == player_x for b in bombs):
+        print("\nYou were hit! Game Over! 💥")
+        break
+
+    if msvcrt.kbhit():
+        k = msvcrt.getch().decode().lower()
+        if k=="a" and player_x > 0: player_x -= 1
+        if k=="d" and player_x < W-1: player_x += 1
+
+    time.sleep(0.1)
