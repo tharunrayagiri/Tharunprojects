@@ -1,0 +1,47 @@
+import os, time, msvcrt, random
+
+W, H = 40, 15
+ball = [W//2, H//2]
+vel = [1, 1]
+p1, p2 = H//2, H//2
+
+def draw():
+    os.system("cls")
+    for y in range(H):
+        for x in range(W):
+            if (x,y)==(ball[0], ball[1]):
+                print("O", end="")
+            elif x==2 and abs(y-p1)<=1:
+                print("|", end="")
+            elif x==W-3 and abs(y-p2)<=1:
+                print("|", end="")
+            else:
+                print(" ", end="")
+        print()
+
+while True:
+    draw()
+
+    if msvcrt.kbhit():
+        k = msvcrt.getch().decode().lower()
+        if k=="w" and p1>1: p1-=1
+        if k=="s" and p1<H-2: p1+=1
+
+    if ball[1] <= 0 or ball[1] >= H-1:
+        vel[1] *= -1
+
+    if ball[0] == 3 and abs(ball[1]-p1)<=1:
+        vel[0] *= -1
+    if ball[0] == W-4 and abs(ball[1]-p2)<=1:
+        vel[0] *= -1
+
+    p2 += 1 if p2 < ball[1] else -1 if p2 > ball[1] else 0
+
+    ball[0]+=vel[0]
+    ball[1]+=vel[1]
+
+    if ball[0] <= 0 or ball[0] >= W-1:
+        print("\nGame Over!")
+        break
+
+    time.sleep(0.07)
